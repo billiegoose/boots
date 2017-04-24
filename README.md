@@ -37,3 +37,4 @@ should open up qemu window and print something.
 ## How to boot from USB stick
 
 I will find out soon and let you know.
+Edit: I got it to work by running `dd if=myos.img of=/dev/sd[c1 in my case but yours will be different]` in Git Bash.
