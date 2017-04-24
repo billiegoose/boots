@@ -25,13 +25,33 @@ main:
 	mov si, text_string	; Put string position into SI
 	call print_string	; Call our string-printing routine
 
-	call print_time		; Print current hour
+	mov ah, 02h		; set cursor position
+	mov dx, 0048h		; to 0, 72
+	int 10h
+	call print_time		; Print current time
 
 	jmp main		; infinite loop
 
-
 	text_string db 'Welcome to WillOS! ', 0
 
+macro print_bcd_high op1 {
+	push ax
+	mov al, op1
+	shr al, 4		; get just high nibble
+	add al, 30h		; add offset of '0' char
+	mov ah, 0Eh		; BIOS print char at cursor
+	int 10h			; BIOS video service
+	pop ax
+}
+macro print_bcd_low op1 {
+	push ax
+	mov al, op1
+	and al, 0Fh		; get just low nibble
+	add al, 30h		; add offset of '0' char
+	mov ah, 0Eh		; BIOS print char at cursor
+	int 10h			; BIOS video service
+	pop ax
+}
 
 print_string:			; Routine: output string in SI to screen
 	mov ah, 0Eh		; int 10h 'print char' function
@@ -49,45 +69,16 @@ print_string:			; Routine: output string in SI to screen
 print_time:			; Routine: output current time to screen in 00:00 format
 	mov ah, 02h		; Select "Read real time clock" service
 	int 1ah			; BIOS Time of Day Services interupt
-	; Hx:xx:xx
-	mov al, ch		;
-	shr al, 4
-	add al, 30h
+	print_bcd_high ch	; hours
+	print_bcd_low ch
+	mov al, 3Ah 		; ':'
 	call bios.write_char
-	; xH:xx:xx
-	mov al, ch
-	and al, 0fh
-	add al, 30h
+	print_bcd_high cl	; minutes
+	print_bcd_low cl
+	mov al, 3Ah 		; ':'
 	call bios.write_char
-	
-	mov al, 3Ah ; ':'
-	call bios.write_char
-	
-	; xx:Mx:xx
-	mov al, cl		;
-	shr al, 4
-	add al, 30h
-	call bios.write_char
-	; xx:xM:xx
-	mov al, cl
-	and al, 0fh
-	add al, 30h
-	call bios.write_char
-	
-	mov al, 3Ah ; ':'
-	call bios.write_char
-	
-	; Get MSD of seconds
-	; xx:xx:Sx
-	mov al, dh		; Move "seconds" BCD to A register
-	shr al, 4		; get 10s digit nibble
-	add al, 30h		; Add ASCII offset to '0'
-	call bios.write_char	; Print 10s seconds
-	; xx:xx:xS
-	mov al, dh		; Move "seconds" BCD to A register
-	and al, 0Fh		; get 1s digit nibble
-	add al, 30h		; Add ASCII offset to '0'
-	call bios.write_char	; Print 1s seconds
+	print_bcd_high dh	; seconds
+	print_bcd_low dh
 	ret
 
 bios.write_char:		; Just a friendly name for BIOS Service AH=0Eh int 10h
