@@ -22,4 +22,4 @@ blank.img :
 
 
 clean:
-	rm -f myos.iso trace-*
+	rm -f myos.iso myos.img trace-*
