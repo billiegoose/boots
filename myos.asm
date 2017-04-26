@@ -3,8 +3,13 @@
 
 ; tip: BIOS does not use ASCII but code page 437 (https://en.wikipedia.org/wiki/Code_page_437)
 
-include 'bios/10video.inc'
-include 'util/print_bcd.inc'
+; Media: 1.44 MB floppy (emulation)
+; This kind of floppy has: 80 tracks and 18 sectors / track.
+; and is specifically listed as a drive type and media type combination
+; supported by Phoenix BIOS 4.0
+
+include 'bios/_macros.inc'
+include 'util/_macros.inc'
 
 start:
 	mov ax, 07C0h		; Set up 4K stack space after this bootloader
@@ -15,17 +20,17 @@ start:
 	mov ax, 07C0h		; Set data segment to where we're loaded
 	mov ds, ax
 	
-	bios.hide_cursor
-	bios.set_cursor 0, 0
+	bios.cursor.hide
+	bios.cursor.moveto 0, 0
 	call bios.clear_screen
 
 main:
-	bios.set_cursor 0, 0
+	bios.cursor.moveto 0, 0
 	call bios.clear_screen
-	bios.set_cursor 0, 0
+	bios.cursor.moveto 0, 0
 	mov si, text_string	; Put string position into SI
 	call print_string	; Call our string-printing routine
-	bios.set_cursor 0, 72	; TODO 72
+	bios.cursor.moveto 0, 72	; TODO 72
 	call print_time		; Print current time
 
 	call bios.wait_frame
@@ -35,10 +40,8 @@ string_data:
 	text_string db 'Welcome to WillOS! ', 0
 
 inclusions:
-	include 'bios/10video.asm'
-	include 'bios/15system.asm'
-	include 'util/cstrings.asm'
-	include 'util/print_time.asm'
+	include 'bios/_routines.asm'
+	include 'util/_routines.asm'
 
 fill_rest_with_zeros:
 	times 510-($-$$) db 0	; Pad remainder of boot sector with 0s
