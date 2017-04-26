@@ -4,5 +4,9 @@ GITBASH="'/c/Program\ Files/Git/bin/bash'"
 WINBASH='/c/Windows/System32/bash'
 
 ./makefloppy.sh
-qemu-system-i386 -boot a -fda $NAME.img # boot from floppy (ew...)
-#qemu-system-i386 -boot d -cdrom $NAME.iso # boot from CD
+
+mkdir -p cdiso
+cp $NAME.img cdiso
+$WINBASH -c "mkisofs -o $NAME.iso -b $NAME.img cdiso/"
+
+rm -rf cdiso

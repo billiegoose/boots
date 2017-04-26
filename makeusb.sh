@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-make myos.img
+./makefloppy.sh
 
 SIZE=3789504
 
