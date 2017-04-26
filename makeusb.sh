@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-
+set -e
 ./makefloppy.sh
 
 SIZE=3789504

@@ -1,4 +1,5 @@
 # /usr/bin/env bash
+set -e
 NAME=myos
 GITBASH="'/c/Program\ Files/Git/bin/bash'"
 WINBASH='/c/Windows/System32/bash'

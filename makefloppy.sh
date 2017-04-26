@@ -1,8 +1,8 @@
 # /usr/bin/env bash
+set -e
 NAME=myos
 GITBASH="'/c/Program\ Files/Git/bin/bash'"
 WINBASH='/c/Windows/System32/bash'
-
 # Do a full clean and rebuild each time,
 # avoiding the trouble that incremental Makefile
 # builds that aren't aware of all dependencies can cause.
