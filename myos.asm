@@ -38,25 +38,46 @@ start:
 
 	; Demonstrate that this sector is loaded into ram
 	; where I said it was.
-	mov ax, $
-	call print_ax
+	; mov ax, $
+	; call print_ax
 	
 	; Demonstrate that the last two bytes of this sector ends with the signature AA55
-	mov ax, [7C00h + 510]
-	call print_ax
+	; mov ax, [7C00h + 510]
+	; call print_ax
 
 	bios.cursor.hide
 	bios.cursor.moveto 0, 0
 	call bios.clear_screen
 	
-	; load the 1st current sector to ram
-	bios.cursor.moveto 1, 0
-	bios.disk.sector.read 0, 0, 0, 1, 1, 7C00h + 512
+	; the bios loaded the first 512 bytes into RAM
+	; at memory location 7C00 for us.
+	; Specifically, it loaded:
+	; - the first sector (of 18 sectors)
+	; - of the first track (of 80 tracks)
+	; - on the top side (of a two-sided disk)
+	;
+	; The majority of this first 512 bytes then is dedicated
+	; to loading the rest of the whopping 1.44MB floppy into
+	; memory.
+	bios.disk.sector.read 0, 0, 0, 2, 1, 7C00h + 512
 	jc disk_error
-	call print_ax
-	mov si, 512 + string_data
-	call print_string
+	;call print_ax
+	;mov si, 512 + string_data
+	;call print_string
+
+	; Fun silliness
+	mov byte [0b8000h], 0E1h ; ß
+	mov byte [0b8006h], 't'
+	mov byte [0b8008h], 's'
+spinner:
+	mov byte [0b8002h], 'o'
+	mov byte [0b8004h], 148
+	call bios.wait_frame
+	mov byte [0b8002h], 148
+	mov byte [0b8004h], 'o'
+	call bios.wait_frame
 	jmp main
+	jmp spinner
 	
 disk_error:
 	bios.cursor.moveto 24, 0
@@ -64,28 +85,35 @@ disk_error:
 	call print_string
 	call print_ah
 	jmp $
-	
+
+inclusions:
+	include 'bios/_routines.asm'
+	include 'util/_routines.asm'
+
+string_data:
+	disk_error_string db 'Error https://error.directory/BIOS#13', 0
+
+fill_rest_with_zeros:
+	times 510-($-$$) db 0	; Pad remainder of boot sector with 0s
+boot_signature:
+	dw 0xAA55		; The standard PC boot signature
+; ====================================
+; Now begins the post-bootloader era!!
+;
 main:
 	bios.cursor.moveto 0, 0
 	call bios.clear_screen
 	bios.cursor.moveto 0, 0
 	mov si, text_string	; Put string position into SI
 	call print_string	; Call our string-printing routine
-	bios.cursor.moveto 0, 72	; TODO 72
+	bios.cursor.moveto 0, 72
 	call print_time		; Print current time
 
 	call bios.wait_frame
 	jmp main		; infinite loop
 
-inclusions:
-	include 'bios/_routines.asm'
-	include 'util/_routines.asm'
-	
-string_data:
+more_inclusions:
+	include 'util/print_time.asm'
+
+more_string_data:
 	text_string db 'Welcome to WillOS! ', 0
-	disk_error_string db 'Error https://error.directory/BIOS#13', 0
-		
-fill_rest_with_zeros:
-	times 510-($-$$) db 0	; Pad remainder of boot sector with 0s
-boot_signature:
-	dw 0xAA55		; The standard PC boot signature
