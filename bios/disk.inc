@@ -1,4 +1,4 @@
-macro bios.read_sector drive, head, track, sector, length, address {
+macro bios.disk.sector.read drive, head, track, sector, length, address {
     pusha
     mov dl, drive
     mov dh, head
@@ -6,5 +6,6 @@ macro bios.read_sector drive, head, track, sector, length, address {
     mov cl, sector
     mov al, length
     mov ah, 02h
+	mov bx, address
     int 13h
 }
