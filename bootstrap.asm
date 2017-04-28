@@ -48,8 +48,8 @@ start:
 address_loop:
 	mov bx, 512 ; memory address # 0-FFFF
 	mov cl, 2 ; sector # 1-18
-	mov ch, 0 ; track # 0-79
 	mov dh, 0 ; head # 0-1
+	mov ch, 0 ; track # 0-79
 	mov dl, 0 ; drive # (won't change)
 bootstrap.start_of_loop:
 	mov al, 1 ; number of sectors to copy
@@ -61,19 +61,19 @@ bootstrap.start_of_loop:
 	je bootstrap.rollover_segment
 bootstrap.keep_going:
 	add cl, 1
-	cmp cl, 19
+	cmp cl, 18 + 1
 	jne bootstrap.start_of_loop		; next
-	mov cl, 0				; reset sector to 0
-	add ch, 1				; increment track
-	cmp ch, 1; TODO: 80
+	mov cl, 1				; reset sector to 1
+	add dh, 1				; switch head (read opposite side of disk)
+	cmp dh, 1 + 1
 	jne bootstrap.start_of_loop
-	mov ch, 0				; reset track to 0
-	add dh, 1				; increment head (side of disk)
-	cmp dh, 1; TODO: 2
+	mov dh, 0				; reset head to 0
+	add ch, 1				; increment track
+	cmp ch, 2; TODO: 80
+	jne bootstrap.start_of_loop
 	; reset ES register
 	mov ax, 0
 	mov es, ax
-	jne bootstrap.start_of_loop
 	
 bootstrap.end_of_loading:
 	jmp main
