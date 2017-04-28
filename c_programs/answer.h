@@ -1,0 +1,1 @@
+int getAnswer () asm ("getAnswer");

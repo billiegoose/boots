@@ -11,6 +11,14 @@ WINBASH='/c/Windows/System32/bash'
 # Clean
 rm -f $NAME.iso $NAME.img $NAME.bin trace-*
 
+# Compile c_programs
+(cd c_programs;
+ gcc -S -masm=intel -m16 answer.c;
+# Strip out the gnu assembler directives
+# since fasm errors out when it encounters them
+ sed -i '/^\s*\./d' answer.s;
+)
+
 # Assemble
 fasm $NAME.asm $NAME.bin
 

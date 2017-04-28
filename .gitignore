@@ -2,3 +2,4 @@ myos.bin
 myos.img
 blank.img
 trace-*
+c_programs/*.s

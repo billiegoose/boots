@@ -30,7 +30,8 @@ main:
 		call print_ax
 		bios.cursor.write_char ' '
 	}
-	
+	call getAnswer
+	call print_ax
 	; Print welcome message
 	bios.cursor.moveto 0, 0
 	call bios.clear_screen
@@ -53,6 +54,7 @@ event_loop:
 more_inclusions:
 	include 'bios/_routines.asm'
 	include 'util/_routines.asm'
+	include 'c_programs/answer.s'
 
 more_string_data:
 	text_string db 'Welcome to ', 0E1h, 148, 'ots! ', 0
