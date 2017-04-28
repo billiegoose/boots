@@ -25,30 +25,11 @@ main:
 	bios.cursor.moveto 0, 0
 	call bios.clear_screen
 	bios.cursor.moveto 2, 0
-	mov ax, [7c00h + 3*512-2]
-	call print_ax
-	bios.cursor.write_char ' '
-	mov ax, [7c00h + 3*512]
-	call print_ax
-	bios.cursor.write_char ' '
-	mov ax, [7c00h + 4*512]
-	call print_ax
-	bios.cursor.write_char ' '
-	mov ax, [7c00h + 5*512]
-	call print_ax
-	bios.cursor.write_char ' '
-	mov ax, [7c00h + 15*512]
-	call print_ax
-	bios.cursor.write_char ' '
-	mov ax, [7c00h + 16*512]
-	call print_ax
-	bios.cursor.write_char ' '
-	mov ax, [7c00h + 17*512]
-	call print_ax
-	bios.cursor.write_char ' '
-	mov ax, [7c00h + 18*512]
-	call print_ax
-	bios.cursor.write_char ' '
+	rept 32 i:112 {
+		mov ax, [7c00h + i*512]
+		call print_ax
+		bios.cursor.write_char ' '
+	}
 	
 	; Print welcome message
 	bios.cursor.moveto 0, 0

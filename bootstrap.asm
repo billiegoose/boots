@@ -40,9 +40,11 @@ start:
 	; - on the top side (of a two-sided disk)
 	;
 	; The majority of these first 512 bytes then must be dedicated
-	; to loading the rest of the whopping 1.44MB floppy into
-	; memory. A few bytes must be spared for error handling though.
-	; Adjust ES register such that offset of 0 = address 7C00
+	; to loading the rest of the floppy disk - or at least what can;
+	; in 16bit real mode we can only address the first 1MB, and not
+	; all of that is available to us.
+	; A few bytes must be spared for error handling though.
+	; Adjust ES register such that offset of 0 = address 7C00h
 	mov ax, 7C0h
 	mov es, ax
 address_loop:
@@ -57,7 +59,7 @@ bootstrap.start_of_loop:
 	int 13h
 	jc bootstrap.disk_error
 	add bx, 512
-	cmp bx, 0FFFFh
+	cmp bx, 0FFFh
 	je bootstrap.rollover_segment
 bootstrap.keep_going:
 	add cl, 1
@@ -69,7 +71,7 @@ bootstrap.keep_going:
 	jne bootstrap.start_of_loop
 	mov dh, 0				; reset head to 0
 	add ch, 1				; increment track
-	cmp ch, 2; TODO: 80
+	cmp ch, 79 + 1
 	jne bootstrap.start_of_loop
 	; reset ES register
 	mov ax, 0
@@ -80,7 +82,7 @@ bootstrap.end_of_loading:
 
 bootstrap.rollover_segment:
 	mov ax, es
-	add ax, 0FFFh
+	add ax, 0FFh
 	mov es, ax
 	mov bx, 0
 	jmp bootstrap.keep_going
