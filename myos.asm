@@ -30,8 +30,14 @@ main:
 		call print_ax
 		bios.cursor.write_char ' '
 	}
+	; This works!
 	call getAnswer
-	call print_ax
+	call print_al
+	bios.cursor.write_char ' '
+	; This does not work... :/
+	; It seems to not jump back to the right place.
+	;call printAnswer
+	;bios.cursor.write_char ' '
 	; Print welcome message
 	bios.cursor.moveto 0, 0
 	call bios.clear_screen

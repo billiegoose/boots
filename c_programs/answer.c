@@ -1,5 +1,9 @@
 #include "answer.h"
 
-int getAnswer () {
+char getAnswer () {
   return 0x42;
+}
+
+void printAnswer () {
+  print_ax();
 }
