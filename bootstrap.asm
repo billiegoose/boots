@@ -58,8 +58,8 @@ bootstrap.start_of_loop:
 	mov ah, 02h
 	int 13h
 	jc bootstrap.disk_error
-	add bx, 512
-	cmp bx, 0FFFh
+	add bx, 200h				; 512 bytes
+	cmp bx, 1000h
 	je bootstrap.rollover_segment
 bootstrap.keep_going:
 	add cl, 1
@@ -73,18 +73,24 @@ bootstrap.keep_going:
 	add ch, 1				; increment track
 	cmp ch, 79 + 1
 	jne bootstrap.start_of_loop
+
+bootstrap.end_of_loading:
 	; reset ES register
 	mov ax, 0
 	mov es, ax
-	
-bootstrap.end_of_loading:
 	jmp main
 
 bootstrap.rollover_segment:
 	mov ax, es
-	add ax, 0FFh
+	add ax, 100h
 	mov es, ax
 	mov bx, 0
+	; Unfortunately, we don't have room for the entire
+	; floppy disk's 2880 sectors before we run into the
+	; Extended BIOS Data Area (EBDA) and even the Video memory
+	; So we must stop at 9FC00 where the EBDA begins
+	cmp ax, 9FC0h
+	je bootstrap.end_of_loading
 	jmp bootstrap.keep_going
 
 bootstrap.disk_error:
