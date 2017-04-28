@@ -1,5 +1,4 @@
 macro bios.disk.sector.read drive, head, track, sector, length, address {
-    pusha
     mov dl, drive
     mov dh, head
     mov ch, track
