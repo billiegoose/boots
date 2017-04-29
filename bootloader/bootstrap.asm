@@ -78,6 +78,7 @@ bootstrap.end_of_loading:
 	; reset ES register
 	mov ax, 0
 	mov es, ax
+	;jmp enter_protected_mode
 	jmp main
 
 bootstrap.rollover_segment:
@@ -136,3 +137,5 @@ fill_rest_with_zeros:
 
 boot_signature:
 	dw 0xAA55		; The standard PC boot signature
+
+include 'enter_protected_mode.asm'

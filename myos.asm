@@ -9,7 +9,7 @@
 ; supported by Phoenix BIOS 4.0
 
 ; This is the first 512 bytes. Very important.
-include 'bootstrap.asm'
+include 'bootloader/bootstrap.asm'
 
 ; ====================================
 ; Now begins the post-bootloader era!!
@@ -67,8 +67,8 @@ more_string_data:
 
 
 ; fill up a couple segments with numbers
-times 512*3-($-$$) db 22h	; Pad sector 1 with 1s
-rept 13 i:3 {
+times 512*4-($-$$) db 33h	; Pad sector 1 with 1s
+rept 12 i:4 {
 	times 512 db (i*16+i)	; Pad sector i with i's
 }
 rept 240 i:16 {
