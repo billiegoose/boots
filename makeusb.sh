@@ -1,6 +1,5 @@
 #! /usr/bin/env bash
 set -e
-./makefloppy.sh
 
 SIZE=3789504
 
@@ -19,7 +18,7 @@ else
   echo ""
   if [[ "$result" == "y" ]]; then
     echo "Copying myos.img to /dev/$DEV..."
-    dd if="myos.img" of="/dev/$DEV"
+    dd if="myos.bin" of="/dev/$DEV"
     sync
     echo "Complete."
   fi
