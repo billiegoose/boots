@@ -17,8 +17,14 @@ include 'bootloader/index.asm'
 
 include 'bios/_macros.inc'
 include 'util/_macros.inc'
-
+use16
 main:
+.locate_sbx:
+	mov eax, 1
+	mov bx, 1
+	call SBx_locate_sector
+	call print_string
+	jmp $
 	
 .event_loop:
 	; Fun silliness - swap o and ö back and forth
@@ -90,3 +96,6 @@ main:
 ; rept 2880-256 i:256 {
 ; 	times 256 dw i 		; Pad sector i with i's
 ; }
+
+include 'SBx/locate_sector.asm'
+include 'util/print_ax.asm'
