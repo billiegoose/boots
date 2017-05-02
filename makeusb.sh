@@ -17,7 +17,7 @@ else
   read -r -n 1 -p "Blast MBR of /dev/$DEV? [y/N] " result
   echo ""
   if [[ "$result" == "y" ]]; then
-    echo "Copying myos.img to /dev/$DEV..."
+    echo "Copying myos.bin to /dev/$DEV..."
     dd if="myos.bin" of="/dev/$DEV"
     sync
     echo "Complete."

@@ -37,6 +37,9 @@ SBx_assemble_archive:
   mov ss, ax
 
 .loop:
+  ; Don't read indefinitely. Definitely stop before the byte rolls over!
+  cmp [.track], 20h ; 32 tracks should be plenty.
+  je .fin
   ; Loop through sectors, looking for a match
   mov bx, .sector_in_memory
   mov ch, [.track]
@@ -48,8 +51,8 @@ SBx_assemble_archive:
   call .read
   jnc @f
   ; If an error occured (the carry flag is set) we'll just
-  ; assume its a "you've gone too far" error and proceed to the next track,
-  ; unless we are at sector 1, in which case we've probably gone off the last track.
+  ; assume its a "you've gone too far" error and proceed to the next track.
+  ; Unless we are at sector 1, in which case we've probably gone off the last track.
   cmp [.sector], 1
   je .fin
   mov [.sector], 1
@@ -75,8 +78,6 @@ SBx_assemble_archive:
   mov si, .print_space
   call print_string
   
-  ; cmp [.sector], 12
-  ; je .not_found
   ; increment side
   add [.side], 1
   cmp [.side], 2
