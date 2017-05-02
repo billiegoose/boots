@@ -22,7 +22,13 @@ main:
 .locate_sbx:
 	mov eax, 1
 	mov bx, 1
-	call SBx_locate_sector
+  mov si, 9000h
+  ;call SBx_locate_sector
+	call SBx_assemble_archive
+  mov si, .print_done
+  call print_string
+  bios.cursor.moveto 1, 0
+  mov si, 9000h
 	call print_string
 	jmp $
 	
@@ -96,6 +102,7 @@ main:
 ; rept 2880-256 i:256 {
 ; 	times 256 dw i 		; Pad sector i with i's
 ; }
-
-include 'SBx/locate_sector.asm'
+.print_done db 13, 10, 'Done.', 13, 10, 0
+;include 'SBx/locate_sector.asm'
+include 'SBx/assemble_archive.asm'
 include 'util/print_ax.asm'
