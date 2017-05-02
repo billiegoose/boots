@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 set -e
 
-SIZE=3789504
+source .env
 
 # This command is very very careful to only select my USB device by partition size
 DEV=$(cat /proc/partitions | awk '$3 == '${SIZE}' && $5==NIL {print $4}')
