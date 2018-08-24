@@ -8,7 +8,7 @@ WINBASH='/c/Windows/System32/bash'
 # builds that aren't aware of all dependencies can cause.
 # @see Jonathan Blow's awesome compiler
 
-./makebin.sh
+#./makebin.sh
 
 # Build blank floppy disk image, if it is missing.
 if [ ! -f blank.img ]; then
@@ -18,3 +18,6 @@ fi
 # Copy assembled code to floppy disk boot sector
 cp blank.img $NAME.img
 $WINBASH -c "dd status=noxfer conv=notrunc if=$NAME.bin of=$NAME.img"
+
+# Copy SBx file to disk
+$WINBASH -c "dd status=noxfer conv=notrunc if=message.txt.sbx of=$NAME.img seek=4 bs=1024"
