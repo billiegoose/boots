@@ -6,6 +6,8 @@ by Mike Saunders et al and am now messing around.
 
 ![Animated GIF of boots booting](https://raw.githubusercontent.com/wmhilton/boots/master/website/video1.gif)
 
+![Running boots in the browser with v86](https://raw.githubusercontent.com/wmhilton/boots/master/website/boots_v86_sim.png)
+
 ## Dependencies
 
 The short answer is "William's computer". Just use my computer, and you'll be fine!
